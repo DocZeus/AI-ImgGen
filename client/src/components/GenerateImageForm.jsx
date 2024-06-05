@@ -78,7 +78,7 @@ const GenerateImageForm = ({
                     placeholder='John Doe'
                     name='name'
                     value={post.name}
-                    handelChange={(e) => setPost({ ...post, name: e.target.value })}
+                    handleChange={(e) => setPost({ ...post, name: e.target.value })}
                 />
                 <TextInput
                     label='Prompt'
@@ -87,7 +87,7 @@ const GenerateImageForm = ({
                     rows='8'
                     textArea
                     value={post.prompt}
-                    handelChange={(e) => setPost({ ...post, prompt: e.target.value })}
+                    handleChange={(e) => setPost({ ...post, prompt: e.target.value })}
                 />
                 Show your work to the community!
             </Body>
