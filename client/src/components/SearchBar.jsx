@@ -16,7 +16,7 @@ const SearchBarContainer = styled.div`
     justify-content: flex-start;
 `;
 
-const SearchBar = () => {
+const SearchBar = ({search, setSearch}) => {
     return (
         <SearchBarContainer>
             <SearchOutlined />
@@ -28,7 +28,9 @@ const SearchBar = () => {
                     color: 'inherit',
                     fontSize: '18px',
                     background: 'transparent',
-                }} />
+                }}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)} />
         </SearchBarContainer>
     )
 }

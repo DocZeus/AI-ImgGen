@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import SearchBar from '../components/SearchBar';
 import ImageCard from '../components/ImageCard';
+import { CircularProgress } from '@mui/material';
+import { GetPosts } from '../api';
 
 const Container = styled.div`
     height: 100%;
@@ -62,11 +64,43 @@ const CardWrapper = styled.div`
 `
 
 const Home = () => {
-    const item = {
-        photo: 'https://images.unsplash.com/photo-1715630914955-d91c67c20c2d?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzM3x8fGVufDB8fHx8fA%3D%3D',
-        author: 'Zeus',
-        prompt: 'Le Pepe',
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [search, setSearch] = useState('');
+    const [filteredPosts, setFilteredPosts] = useState([]);
+
+    const getPosts = async () => {
+        setLoading(true);
+        await GetPosts().then((res) => {
+            setLoading(false);
+            setPosts(res?.data?.data);
+            setFilteredPosts(res?.data?.data);
+        })
+            .catch((error) => {
+                setError(error?.response?.data?.message);
+                setLoading(false);
+            })
     }
+
+    useEffect(() => {
+        getPosts();
+    }, [])
+
+    //Search
+    useEffect(() => {
+        if (!search) {
+            setFilteredPosts(posts);
+        }
+        const filteredPosts = posts.filter((post) => {
+            const promptMatch = post?.prompt?.toLowerCase.includes(search.toString().toLowerCase());
+            const authorMatch = post?.name?.toLowerCase.includes(search.toString().toLowerCase());
+            return promptMatch || authorMatch;
+        });
+        if (search) {
+            setFilteredPosts(filteredPosts);
+        }
+    }, [posts, search])
 
     return (
         <Container>
@@ -74,11 +108,25 @@ const Home = () => {
                 Explore popular posts!
                 <Span>🤖 Generated with AI 🖌</Span>
             </Headline>
-            <SearchBar />
+            <SearchBar search={search} setSearch={setSearch} />
             <Wrapper>
-                <CardWrapper>
-                    <ImageCard item={item} />
-                </CardWrapper>
+                {error && <div style={{ color: 'red' }}>
+                    {error}</div>}
+                {loading ? (
+                    <CircularProgress />
+                ) : (
+                    <CardWrapper>
+                        {filteredPosts.length === 0 ? (
+                            <>No Posts Found</>
+                        ) : (
+                            <>
+                                {filteredPosts.slice.reverse.map((item, index) => (
+                                    <ImageCard key={index} item={item} />
+                                ))}
+                            </>
+                        )}
+                    </CardWrapper>
+                )}
             </Wrapper>
         </Container>
     )

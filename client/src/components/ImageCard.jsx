@@ -79,9 +79,9 @@ const ImageCard = ({ item }) => {
                 }}>
                     <Author>
                         <Avatar sx={{ width: '30px', height: '30px' }}>
-                            {item?.author[0]}
+                            {item?.name[0]}
                         </Avatar>
-                        {item?.author}
+                        {item?.name}
                     </Author>
                     <DownloadRounded onClick={() => FileSaver.saveAs(item?.photo, 'download.jpg')} />
                 </div>
